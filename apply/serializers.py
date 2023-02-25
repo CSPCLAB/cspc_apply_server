@@ -20,7 +20,6 @@ class ResumeSerializer(serializers.ModelSerializer):
         fields = ['interview_time_choice', 'name', 'semester', 'phone',
                   'introduce', 'motivate', 'to_do', 'etc', 'interview_requirement','applicant']
     
-
     # def update(self, instance, validated_data):
     #     nested_serializer = self.fields['interview_time_choice']
     #     nested_instance = instance.interview_time_choice
@@ -47,3 +46,10 @@ class ResumeRequestSerializer(serializers.ModelSerializer):
         model = Resume
         fields = ['interview_time_choice', 'name', 'semester', 'phone',
                   'introduce', 'motivate', 'to_do', 'etc', 'interview_requirement']
+        
+class ResultSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Resume
+        fields = ['name','fixed_interview_time','interview_place','is_pass_document','is_pass_final']
+
+

@@ -40,6 +40,12 @@ class InterviewTime(models.Model):
 
     def __str__(self):
         return self.time.strftime("%Y/%m/%d %H:%M:%S")
+    
+class InterviewPlace(models.Model):
+    place = models.CharField(max_length=20)
+
+    def __str__(self):
+        return self.place
 
 class Resume(models.Model):
     applicant = models.OneToOneField(Applicant,on_delete=models.CASCADE)
@@ -53,8 +59,9 @@ class Resume(models.Model):
     etc = models.TextField(default='')
 
     interview_time_choice = models.ManyToManyField(InterviewTime,related_name="interview_time")
-    fixed_interview_time = models.ForeignKey(InterviewTime,on_delete=models.CASCADE,null=True,blank=True)
+    fixed_interview_time = models.DateTimeField(null=True,blank=True)
     interview_requirement = models.TextField(default='')
+    interview_place = models.ForeignKey(InterviewPlace,on_delete=models.CASCADE,null=True,blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -20,3 +20,7 @@ get_resume_response = openapi.Responses(
 get_interview_response = openapi.Responses(
     responses={200: InterviewtimeSerializer(many=True), 400: "Error"}
 )
+
+get_result_response = openapi.Responses(
+    responses={200: ResultSerializer(),404 : "Not found"}
+)
