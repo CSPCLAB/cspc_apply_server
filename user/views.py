@@ -17,7 +17,7 @@ def check_applicant(request):
         password = request.data['password']
 
 
-        user = authenticate(student_id=student_id,password=password)
+        user = authenticate(username=student_id,password=password)
         if user is None:
 
         # 기존 지원자 로그인 성공
