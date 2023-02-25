@@ -39,7 +39,7 @@ class ResumeAPI(APIView):
         else:
             return Response(status=401)
     
-    @swagger_auto_schema(request_body=ResumeSerializer,authentication_classes=[BasicAuthentication])
+    @swagger_auto_schema(request_body=ResumeRequestSerializer,authentication_classes=[BasicAuthentication])
     def post(self,request):
         if request.user.is_authenticated:
             request.data['applicant'] = request.user.id
