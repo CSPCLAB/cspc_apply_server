@@ -116,7 +116,7 @@ DATABASES = {
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
 AUTH_USER_MODEL = 'user.Applicant'
-AUTHENTICATION_BACKENDS = ['user.backends.StudentIDBackend']
+#AUTHENTICATION_BACKENDS = ['user.backends.StudentIDBackend']
 AUAUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
