@@ -74,7 +74,7 @@ def set_interview_place(self,request,queryset):
 class ResumeAdmin(admin.ModelAdmin):
     list_display = ('applicant', 'name', 'semester',
                     'phone', 'fixed_interview_time')
-    actions=[get_all_resume,set_interview_time]
+    actions=[get_all_resume,set_interview_time,set_interview_place]
 
 
     def get_ordering(self, request):

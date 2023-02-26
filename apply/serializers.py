@@ -59,10 +59,10 @@ class ResumeRequestSerializer(serializers.ModelSerializer):
         model = Resume
         fields = ['interview_time_choice', 'name', 'semester', 'phone',
                   'introduce', 'motivate', 'to_do', 'etc', 'interview_requirement']
-        
+
+
 class ResultSerializer(serializers.ModelSerializer):
+    interview_place = serializers.CharField(source='interview_place.place')
     class Meta:
         model = Resume
         fields = ['name','fixed_interview_time','interview_place','is_pass_document','is_pass_final']
-
-
