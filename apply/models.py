@@ -74,6 +74,4 @@ class Resume(models.Model):
         return self.name
 
 
-
-
 # Create your models here.

@@ -1,12 +1,13 @@
 from django.contrib import admin
 from apply.models import *
+from user.models import *
 import csv
 from django.http import HttpResponse
 from django.db.models import Count
 import datetime
 
-
 from django.shortcuts import get_object_or_404
+
 
 
 @admin.action(description='csv 파일 다운로드')
@@ -70,11 +71,36 @@ def set_interview_place(self,request,queryset):
         query.interview_place = place
         query.save()
 
+@admin.action(description="일괄 서류 불합격")
+def set_doc_fail(self,request,queryset):
+    for _resume in queryset:
+        _resume.is_pass_document = False
+        _resume.save()
+
+@admin.action(description="일괄 서류 합격")
+def set_doc_pass(self,request,queryset):
+    for _resume in queryset:
+        _resume.is_pass_document = True
+        _resume.save()
+
+@admin.action(description="일괄 최종 합격")
+def set_final_pass(self,request,queryset):
+    for _resume in queryset:
+        _resume.is_pass_final = True
+        _resume.save()
+
+@admin.action(description="일괄 최종 불합격")
+def set_final_fail(self,request,queryset):
+    for _resume in queryset:
+        _resume.is_pass_final = False
+        _resume.save()
+
 @admin.register(Resume)
 class ResumeAdmin(admin.ModelAdmin):
     list_display = ('applicant', 'name', 'semester',
                     'phone', 'fixed_interview_time')
-    actions=[get_all_resume,set_interview_time,set_interview_place]
+    search_fields = ['name','applicant__student_id','introduce','motivate']
+    actions=[get_all_resume,set_interview_time,set_interview_place,set_doc_fail,set_doc_pass,set_final_pass,set_final_fail]
 
 
     def get_ordering(self, request):
