@@ -33,6 +33,7 @@ class Recruitment(models.Model):
             self.process = RecruitProcess.APPLY
         else :
             self.process = RecruitProcess.CLOSE
+        self.save()
     
 class InterviewTime(models.Model):
     time = models.DateTimeField()

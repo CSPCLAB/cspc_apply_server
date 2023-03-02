@@ -25,6 +25,10 @@ def check_applicant(request):
                 return Response(status=500)
             # 새로운 지원자
             else:
+                recruit = Recruitment.objects.get()
+                print(recruit.process)
+                if recruit.process != 'apply':
+                    return Response(status=405)
                 applicant = Applicant.object.create_user(student_id=student_id,password=password)
                 return Response(applicant.id,status=200)
         
