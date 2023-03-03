@@ -69,7 +69,7 @@ class ResumeAPI(APIView):
 @swagger_auto_schema(method="get", responses=get_interview_response)
 @api_view(['GET'])
 def get_interview_time_list(reqeust):
-    times = InterviewTime.objects.all()
+    times = InterviewTime.objects.all().order_by('time')
     serializer = InterviewtimeSerializer(times,many=True)
     return Response(serializer.data,status=200)
 
