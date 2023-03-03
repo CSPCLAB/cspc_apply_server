@@ -25,11 +25,11 @@ class Recruitment(models.Model):
 
     def check_process(self):
         now = timezone.now()
-        if now > self.announce_final_time :
+        if now >= self.announce_final_time :
             self.process = RecruitProcess.FINAL
-        elif now > self.announce_middle_time :
+        elif now >= self.announce_middle_time :
             self.process = RecruitProcess.MIDDLE
-        elif now.date() > self.start_time :
+        elif now.date() >= self.start_time :
             self.process = RecruitProcess.APPLY
         else :
             self.process = RecruitProcess.CLOSE
