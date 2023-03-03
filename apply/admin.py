@@ -13,20 +13,19 @@ from django.shortcuts import get_object_or_404
 @admin.action(description='csv 파일 다운로드')
 def get_all_resume(self, request, queryset):
     meta = self.model._meta
-    field_names = [field.name for field in meta.fields]
-
+    field_names = ['name', 'applicant', 'phone', 'semester', 'introduce', 'motivate', 'to_do', 'etc', 'fixed_interview_time']
+    excel_row = ['이름', '학번', '전화번호','학기', '자기소개', '지원동기', '하고 싶은 것' , '기타', '면접 일자']
     response = HttpResponse(content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
         meta)
     writer = csv.writer(response)
 
-    writer.writerow(field_names)
+    writer.writerow(excel_row)
     for obj in queryset:
         row = writer.writerow([getattr(obj, field) for field in field_names])
 
     return response
 
-#TODO 
 @admin.action(description='면접 시간 자동 배치')
 def set_interview_time(self, request, queryset): #self = resume model , queryset = 체크했던 object들
     times = [queryset.time for queryset in InterviewTime.objects.all()]
@@ -97,8 +96,8 @@ def set_final_fail(self,request,queryset):
 
 @admin.register(Resume)
 class ResumeAdmin(admin.ModelAdmin):
-    list_display = ('applicant', 'name', 'semester',
-                    'phone', 'fixed_interview_time')
+    list_display = ('name', 'semester',
+                    'phone', 'fixed_interview_time','interview_place')
     search_fields = ['name','applicant__student_id','introduce','motivate']
     actions=[get_all_resume,set_interview_time,set_interview_place,set_doc_fail,set_doc_pass,set_final_pass,set_final_fail]
 
