@@ -27,6 +27,6 @@ jobs:
           DJANGO_ALLOWED_HOSTS: ${{ secrets.DJANGO_ALLOWED_HOSTS }}
       run: |
         cd app
-        python manage.py makemigrations
-        python manage.py migrate
-        python manage.py test
+        python manage.py makemigrations --settings=cspc_web.settings_dev
+        python manage.py migrate --settings=cspc_web.settings_dev
+        python manage.py test --settings=cspc_web.settings_dev
