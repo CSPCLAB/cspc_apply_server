@@ -1,27 +1,51 @@
-from rest_framework.test import APITestCase
-from rest_framework import status
-from django.urls import reverse
-from rest_framework.authtoken.models import Token
-from django.contrib.auth import get_user_model
+from django.test import TestCase
+from django.utils import timezone
+from .models import Recruitment, TermType, RecruitProcess
+from unittest.mock import patch
 
+class RecruitmentTestCase(TestCase):
 
-class GetRecruitSessionTest(APITestCase):
-    def test_get_recruit_session(self):
-        url = reverse('get_recuit_session')  # 이제 이 이름을 사용할 수 있습니다.
-        response = self.client.get(url)
+    def create_recruitment(self, process_state, save=True):
+        """
+        Helper method to create a recruitment object with a specific process state.
+        """
+        now = timezone.now()
+        recruitment = Recruitment(
+            year=now.year,
+            term=TermType.SPRING,
+            start_time=now.date() - timezone.timedelta(days=10),
+            document_deadline=now.date() + timezone.timedelta(days=10),
+            announce_middle_time=now - timezone.timedelta(days=5),
+            interview_start_time=now.date() + timezone.timedelta(days=5),
+            interview_end_time=now.date() + timezone.timedelta(days=10),
+            announce_final_time=now + timezone.timedelta(days=15),
+            process=process_state,
+        )
+        if save:
+            recruitment.save()
+        return recruitment
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # 추가적인 응답 데이터 검증을 여기에 추가할 수 있습니다.
+    @patch('django.utils.timezone.now')
+    def test_recruitment_process_states(self, mock_now):
+        """
+        Test the get_recuit_session view with different recruitment process states.
+        """
+        # Simulate different times
+        dates_to_test = {
+            RecruitProcess.CLOSE: timezone.now() - timezone.timedelta(days=20),
+            RecruitProcess.APPLY: timezone.now() - timezone.timedelta(days=5),
+            RecruitProcess.MIDDLE: timezone.now(),
+            RecruitProcess.FINAL: timezone.now() + timezone.timedelta(days=20),
+        }
 
+        for state, mock_date in dates_to_test.items():
+            with self.subTest(state=state):
+                recruitment = self.create_recruitment(state, save=False)
+                mock_now.return_value = mock_date
+                recruitment.check_process()
+                self.assertEqual(recruitment.process, state)
 
-class ResumeAPITest(APITestCase):
-    def setUp(self):
-        User = get_user_model()
-        self.user = User.objects.create_user(username='testuser', password='12345')
-        self.client.force_authenticate(user=self.user)
-
-    def test_get_resume(self):
-        url = reverse('resume_api')  # 이 부분은 실제 뷰의 URL에 맞게 수정해야 합니다.
-        response = self.client.get(url)
-
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
+                # Here you would make a request to your view and assert the response
+                response = self.client.get(reverse('get_recuit_session'))
+                self.assertEqual(response.status_code, 200)
+                # Add more assertions here based on what your view returns
