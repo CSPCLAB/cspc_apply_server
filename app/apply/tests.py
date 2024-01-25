@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.utils import timezone
-from .models import Recruitment, TermType, RecruitProcess
 from unittest.mock import patch
+from apply.models import Recruitment, RecruitProcess
 
 class RecruitmentTestCase(TestCase):
 
@@ -25,18 +25,16 @@ class RecruitmentTestCase(TestCase):
             recruitment.save()
         return recruitment
 
-    @patch('django.utils.timezone.now')
     def test_recruitment_process_states(self):
         dates_to_test = {
-            RecruitProcess.CLOSE: timezone.make_aware(datetime(2020, 1, 1)),
-            RecruitProcess.APPLY: timezone.make_aware(datetime(2020, 1, 10)),
-            RecruitProcess.MIDDLE: timezone.make_aware(datetime(2020, 1, 15)),
-            RecruitProcess.FINAL: timezone.make_aware(datetime(2020, 1, 20)),
+            RecruitProcess.CLOSE: timezone.now() - timezone.timedelta(days=20),
+            RecruitProcess.APPLY: timezone.now() - timezone.timedelta(days=5),
+            RecruitProcess.MIDDLE: timezone.now(),
+            RecruitProcess.FINAL: timezone.now() + timezone.timedelta(days=20),
         }
 
-        for state, test_date in dates_to_test.items():
-            with self.subTest(state=state):
-                with patch('django.utils.timezone.now', return_value=test_date):
-                    recruitment = self.create_recruitment(state, save=False)
-                    recruitment.check_process()
-                    self.assertEqual(recruitment.process, state)
+        for state, mock_date in dates_to_test.items():
+            with self.subTest(state=state), patch('django.utils.timezone.now', return_value=mock_date):
+                recruitment = self.create_recruitment(state, save=False)
+                recruitment.check_process()
+                self.assertEqual(recruitment.process, state)
