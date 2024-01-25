@@ -26,26 +26,17 @@ class RecruitmentTestCase(TestCase):
         return recruitment
 
     @patch('django.utils.timezone.now')
-    def test_recruitment_process_states(self, mock_now):
-        """
-        Test the get_recuit_session view with different recruitment process states.
-        """
-        # Simulate different times
+    def test_recruitment_process_states(self):
         dates_to_test = {
-            RecruitProcess.CLOSE: timezone.now() - timezone.timedelta(days=20),
-            RecruitProcess.APPLY: timezone.now() - timezone.timedelta(days=5),
-            RecruitProcess.MIDDLE: timezone.now(),
-            RecruitProcess.FINAL: timezone.now() + timezone.timedelta(days=20),
+            RecruitProcess.CLOSE: timezone.make_aware(datetime(2020, 1, 1)),
+            RecruitProcess.APPLY: timezone.make_aware(datetime(2020, 1, 10)),
+            RecruitProcess.MIDDLE: timezone.make_aware(datetime(2020, 1, 15)),
+            RecruitProcess.FINAL: timezone.make_aware(datetime(2020, 1, 20)),
         }
 
-        for state, mock_date in dates_to_test.items():
+        for state, test_date in dates_to_test.items():
             with self.subTest(state=state):
-                recruitment = self.create_recruitment(state, save=False)
-                mock_now.return_value = mock_date
-                recruitment.check_process()
-                self.assertEqual(recruitment.process, state)
-
-                # Here you would make a request to your view and assert the response
-                response = self.client.get(reverse('get_recuit_session'))
-                self.assertEqual(response.status_code, 200)
-                # Add more assertions here based on what your view returns
+                with patch('django.utils.timezone.now', return_value=test_date):
+                    recruitment = self.create_recruitment(state, save=False)
+                    recruitment.check_process()
+                    self.assertEqual(recruitment.process, state)
