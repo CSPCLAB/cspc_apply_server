@@ -2,12 +2,12 @@ version: '3.8'
 
 services:
   api:
-    build: .
+    build: ./app
     volumes:
       - static_volunme:/home/app/web/static
     command: gunicorn cspc_web.wsgi:application -w 4 --bind 0.0.0.0:8000
     env_file:
-      - ./.env
+      - ./app/.env
     expose:
       - 8000
     depends_on:
