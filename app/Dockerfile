@@ -4,6 +4,7 @@ RUN mkdir -p /home/app
 
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
+ENV DEBUG_MODE=False
 RUN mkdir $APP_HOME
 
 WORKDIR $APP_HOME
