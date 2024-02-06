@@ -141,6 +141,7 @@ AUAUTH_PASSWORD_VALIDATORS = [
 CSRF_TRUSTED_ORIGINS = [
     "https://apply.cspc.me",
     "http://localhost:8000",
+    "http://localhost:3000",  # for Dev
 ]
 
 # Internationalization
