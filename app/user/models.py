@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.models.signals import post_init, post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import AbstractUser ,BaseUserManager
+from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.contrib.auth.base_user import BaseUserManager
 
 
@@ -13,7 +13,7 @@ class UserManager(BaseUserManager):
         Creates and saves a User with the given email and password.
         """
         if not student_id:
-            raise ValueError('The given student_id must be set')
+            raise ValueError("The given student_id must be set")
 
         user = self.model(student_id=student_id, **extra_fields)
         user.set_password(password)
@@ -21,25 +21,28 @@ class UserManager(BaseUserManager):
         return user
 
     def create_user(self, student_id, password=None, **extra_fields):
-        extra_fields.setdefault('is_superuser', False)
+        extra_fields.setdefault("is_superuser", False)
         return self._create_user(student_id, password, **extra_fields)
 
     def create_superuser(self, student_id, password, **extra_fields):
-        extra_fields.setdefault('is_superuser', True)
-        extra_fields.setdefault('is_staff', True)
-        if extra_fields.get('is_superuser') is not True:
-            raise ValueError('Superuser must have is_superuser=True.')
+        extra_fields.setdefault("is_superuser", True)
+        extra_fields.setdefault("is_staff", True)
+        if extra_fields.get("is_superuser") is not True:
+            raise ValueError("Superuser must have is_superuser=True.")
 
         return self._create_user(student_id, password, **extra_fields)
 
+
 class Applicant(AbstractUser):
-    student_id = models.CharField(max_length=20,unique=True)
+    student_id = models.CharField(max_length=20, unique=True)
     username = None
-    USERNAME_FIELD = 'student_id'
+    USERNAME_FIELD = "student_id"
     REQUIRED_FIELDS = []
     object = UserManager()
+
     def __str__(self):
         return self.student_id
+
 
 class LabMaster(models.Model):
     name = models.CharField(max_length=20)
@@ -49,7 +52,6 @@ class LabMaster(models.Model):
 
     def __str__(self):
         return self.name
-    
 
 
 # 랩짱 변경 시 기존 랩장 비활성화

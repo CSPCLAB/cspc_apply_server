@@ -5,6 +5,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.exceptions import ValidationError
 
+
 class UserCreationForm(forms.ModelForm):
     """A form for creating new users. Includes all the required
     fields, plus a repeated password."""
@@ -45,8 +46,7 @@ class UserChangeForm(forms.ModelForm):
 
     class Meta:
         model = Applicant
-        fields = ["student_id", "password",
-                   "is_active"]
+        fields = ["student_id", "password", "is_active"]
 
 
 class UserAdmin(BaseUserAdmin):
@@ -60,7 +60,6 @@ class UserAdmin(BaseUserAdmin):
     list_display = ["student_id"]
     fieldsets = [
         (None, {"fields": ["student_id", "password"]}),
-
     ]
     # add_fieldsets is not a standard ModelAdmin attribute. UserAdmin
     # overrides get_fieldsets to use this attribute when creating a user.
@@ -69,13 +68,14 @@ class UserAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ["wide"],
-                "fields": ["student_id",  "password1", "password2"],
+                "fields": ["student_id", "password1", "password2"],
             },
         ),
     ]
     search_fields = ["student_id"]
     ordering = ["student_id"]
     filter_horizontal = []
+
 
 # Now register the new UserAdmin...
 admin.site.register(Applicant, UserAdmin)
