@@ -21,7 +21,7 @@ git clone https://github.com/CSPCLAB/cspc_apply_server.git
 ### 가상환경 세팅
 ```bash
 cd ./app
-conda activate env # 가상환경 세팅
+conda activate env # 가상환경 세팅  (python -m venv venv)
 pip install -r requirements.txt
 
 ```
