@@ -16,8 +16,8 @@ from swagger_response import *
 def check_applicant(request):
     try:
         # request에서 이름, 패스워드 추출
-        student_id = request.data["student_id"]
-        password = request.data["password"]
+        student_id = request.data.get("student_id")
+        password = request.data.get("password")
 
         user = authenticate(username=student_id, password=password)
         if user is None:
