@@ -168,19 +168,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-UPLOAD_TO_OPTIONS = {
-    "black_listed_extensions": [
-        "php",
-        "html",
-        "htm",
-        "js",
-        "vbs",
-        "py",
-        "pyc",
-        "asp",
-        "aspx",
-        "pl",
-    ],
-    "max_filename_length": 50,
-}
