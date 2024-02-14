@@ -31,9 +31,9 @@ services:
     build: 
       context: ./app
       dockerfile: Dockerfile-dev
-    command: python manage.py runserver 0.0.0.0:8000
+    command: python manage.py runserver 0.0.0.0:8000 --settings=cspc_web.settings_dev
     volumes:
-    - ./app/db.sqlite3:/home/app/web/db.sqlite3
+    - ./app/db:/home/app/web/db
     ports:
       - "8005:8000"
 volumes:
