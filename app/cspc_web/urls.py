@@ -43,6 +43,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/apply/", include("apply.urls")),
     path("api/user/", include("user.urls")),
+    path("api/image/", include("image.urls")),
     re_path(
         r"^swagger(?P<format>\.json|\.yaml)$",
         schema_view.without_ui(cache_timeout=0),

@@ -2,6 +2,7 @@ from drf_yasg import openapi
 
 from user.serializers import *
 from apply.serializers import *
+from image.serializers import *
 
 check_id_response = openapi.Responses(
     responses={
@@ -29,4 +30,8 @@ get_interview_response = openapi.Responses(
 
 get_result_response = openapi.Responses(
     responses={200: ResultSerializer(), 404: "Not found"}
+)
+
+get_image_response = openapi.Responses(
+    responses={200: ImageSerializer(many=True), 400: "Error"}
 )
