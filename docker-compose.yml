@@ -27,6 +27,15 @@ services:
       - postgres_data:/var/lib/postgresql/data/
     env_file:
       - ./.env.db
+  dev_api:
+    build: 
+      context: ./app
+      dockerfile: Dockerfile-dev
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+    - ./app/db.sqlite3:/home/app/web/db.sqlite3
+    ports:
+      - "8005:8000"
 volumes:
   postgres_data:
   static_volunme:
