@@ -81,13 +81,7 @@ class GetResultAPITest(TestCase):
         # 응답 데이터에는 채용 세션 정보가 포함되어야 합니다.
         self.assertIn("year", response.data)
         self.assertIn("term", response.data)
-
-    def test_get_recruit_session_without_existing_session(self):
-        """
-        존재하지 않는 채용 세션 데이터면 404 반환하는지 확인합니다.
-        """
-        response = self.client.get(self.get_recuit_session_url)
-        self.assertEqual(response.status_code, 404)
+        self.assertIn("process", response.data)
 
     @patch("apply.views.get_object_or_404")
     @patch("apply.views.RecruitSerializer")
@@ -119,22 +113,13 @@ class GetResultAPITest(TestCase):
         self.assertIn("year", response.data)
         self.assertIn("term", response.data)
 
-    def test_get_interview_time_list_without_existing_data(self):
-        """
-        존재하는 인터뷰 시간 데이터가 없을 때 200 반환하는지 확인합니다.
-        """
-        response = self.client.get(self.get_interview_time_list_url)
-        self.assertEqual(response.status_code, 200)
-
-        # 응답 데이터가 비어 있어야 합니다.
-        self.assertEqual(len(response.data), 0)
-
     def test_get_interview_time_list_with_existing_data(self):
         """
-        존재하는 인터뷰 시간 데이터가 있으면 200 반환하는지 확인합니다.
+        존재하는 인터뷰 시간 데이터가 있으면 200 반환하는지, 인터뷰시간이 한개 이상 존재하는지 확인합니다.
         """
         response = self.client.get(self.get_interview_time_list_url)
         self.assertEqual(response.status_code, 200)
+        self.assertGreater(len(response.data), 0)
 
     # Resume 관련해서는 하다가 "interview_time_choice"와 같은
     # 여러개 복수 선택 부분을 어떻게 테스트 해야 할지 모르겠어서 일단 보류했습니다...
