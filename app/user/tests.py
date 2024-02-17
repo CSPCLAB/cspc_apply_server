@@ -50,25 +50,26 @@ class UserTests(APITestCase):
 
     def test_existing_applicant_login_success(self):
         """
-        기존 지원자가 로그인 성공한 경우, 상태 코드 500을 반환하는지 확인합니다.
+        기존 지원자가 로그인에 실패한 경우, 상태 코드 500을 반환하는지 확인합니다.
         """
         Applicant.objects.create_user(
             student_id="20240000", password="existingpassword"
         )
-        data = {"student_id": "20240000", "password": "existingpassword"}
+        data = {"student_id": "20240000", "password": "notexistingpassword"}
         response = self.client.post(self.check_applicant_url, data, format="json")
-        print(response)
         self.assertEqual(response.status_code, 500)
 
     def test_new_applicant_with_apply_status(self):
         """
-        신규 지원자가 'APPLY' 상태에서 지원할 때, 상태 코드 200을 반환하는지 확인합니다.
+        신규 지원자가 'APPLY' 상태에서 지원할 때, 상태 코드 200을 반환하고 지원자의 ID를 반환하는지 확인합니다.
         """
         data = {"student_id": "20241111", "password": "itsnewpassword"}
         response = self.client.post(self.check_applicant_url, data, format="json")
-        print(response)
 
         self.assertEqual(response.status_code, 200)
+        # 반환된 ID가 새로 생성된 Applicant 객체의 ID와 일치하는지 확인
+        created_applicant = Applicant.objects.get(student_id="20241111")
+        self.assertEqual(response.data, created_applicant.id)
 
     def test_new_applicant_not_apply_status(self):
         """
@@ -80,21 +81,21 @@ class UserTests(APITestCase):
 
         data = {"student_id": "20242222", "password": "notapply"}
         response = self.client.post(self.check_applicant_url, data, format="json")
-        print(response)
-
         self.assertEqual(response.status_code, 405)
 
     def test_applicant_exists_return_status_201(self):
         """
-        사용자가 이미 존재하는 경우, 상태 코드 201을 반환하는지 확인합니다.
+        사용자가 이미 존재하는 경우(기존 지원자인 경우), 상태 코드 201을 반환하고 사용자의 ID를 반환하는지 확인합니다.
         """
         # 미리 사용자 생성
-        Applicant.objects.create_user(student_id="20243333", password="correcting")
+        created_user = Applicant.objects.create_user(
+            student_id="20243333", password="correcting"
+        )
         data = {"student_id": "20243333", "password": "correcting"}
         response = self.client.post(self.check_applicant_url, data, format="json")
-        print(response)
-
         self.assertEqual(response.status_code, 201)
+        # 반환된 데이터가 사용자의 ID인지 확인
+        self.assertEqual(response.data, created_user.id)
 
     def test_missing_student_id_or_password_return_status_404(self):
         """
@@ -102,27 +103,4 @@ class UserTests(APITestCase):
         """
         data = {}  # student_id와 password를 전달하지 않음
         response = self.client.post(self.check_applicant_url, data, format="json")
-        print(response)
-
         self.assertEqual(response.status_code, 404)
-
-    # def test_none_of_labmasters_not_active(self):
-    #     """
-    #     활성화된 랩장이 없는 경우, 상태 코드 404를 반환하는지 확인합니다.
-    #     """
-    #     LabMaster.objects.create_master(
-    #         name="김서강",
-    #         email="sogangCom@gmail.com",
-    #         phone="01012345678",
-    #         is_active=False,
-    #     )
-    #     data = {
-    #         "name": "김서강",
-    #         "email": "sogangCom@gmail.com",
-    #         "phone": "01012345678",
-    #         "is_active": False,
-    #     }
-    #     response = self.client.post(self.get_master_info_url, data, format="jason")
-    #     print(response)
-
-    #     self.assertEqual(response.status_code, 404)

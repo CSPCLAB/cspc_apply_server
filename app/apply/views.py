@@ -58,6 +58,7 @@ class ResumeAPI(APIView):
                 serializer.save()
                 return Response(serializer.data, status=200)
             else:
+                print(serializer.errors)
                 return Response(
                     serializer.errors, status=400
                 )  # 지원서 수정하는데 잘못 save되면 응답 & status #
