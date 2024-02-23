@@ -36,9 +36,11 @@ services:
     command: python manage.py runserver 0.0.0.0:8000 --settings=cspc_web.settings_dev
     volumes:
     - ./app/db:/home/app/web/db
+    - dev_media_volume:/home/app/web/media
     ports:
       - "8005:8000"
 volumes:
   postgres_data:
   static_volunme:
   media_volume:
+  dev_media_volume:
