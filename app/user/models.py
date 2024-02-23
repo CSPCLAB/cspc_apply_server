@@ -38,7 +38,7 @@ class Applicant(AbstractUser):
     username = None
     USERNAME_FIELD = "student_id"
     REQUIRED_FIELDS = []
-    object = UserManager()
+    objects = UserManager()
 
     def __str__(self):
         return self.student_id
