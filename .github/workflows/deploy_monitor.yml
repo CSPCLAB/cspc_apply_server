@@ -21,6 +21,7 @@ jobs:
                   port: ${{ secrets.PORT }}
                   script: |
                       echo "Checking Docker containers status..."
+                      cd ${{secrets.PATH}}
                       FAILED_CONTAINERS=$(docker-compose -f docker-compose.yml ps -q | xargs docker inspect --format '{{if not .State.Running}} {{.Name}} {{end}}')
                       if [ -n "$FAILED_CONTAINERS" ]; then
                         echo "These containers are not running:$FAILED_CONTAINERS"
