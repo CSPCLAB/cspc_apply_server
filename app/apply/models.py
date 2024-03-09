@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from user.models import Applicant
+from .utils import *
 
 
 class TermType(models.TextChoices):
@@ -42,8 +43,8 @@ class Recruitment(models.Model):
 
 
 class InterviewTime(models.Model):
-    time = models.DateTimeField()
-    is_fixed = models.BooleanField(default=False)
+    time = models.DateTimeField(validators=[validate_interview_time])
+    is_fixed = models.BooleanField(default=False)  # 면접 시간 모두 배정되었는지 여부
 
     def __str__(self):
         return self.time.strftime("%Y/%m/%d %H:%M:%S")
@@ -71,7 +72,7 @@ class Resume(models.Model):
         InterviewTime, related_name="interview_time"
     )
     fixed_interview_time = models.DateTimeField(null=True, blank=True)
-    interview_requirement = models.TextField(default="")
+    interview_requirement = models.TextField(default="")  # 면접 요구 사항
     interview_place = models.ForeignKey(
         InterviewPlace, on_delete=models.CASCADE, null=True, blank=True
     )
