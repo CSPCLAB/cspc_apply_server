@@ -17,7 +17,6 @@ jobs:
                 echo $SHELL
                 ls -l /bin/bash
                 ls -l /usr/bin/bash
-        steps:
             - name: Check Server Status
               uses: appleboy/ssh-action@master
               with:
