@@ -1,11 +1,11 @@
 name: Server Monitoring
 
-on:
-    schedule:
-        # 매일 UTC 시간 기준 00:00에 실행 (현지 시간에 맞게 조정해야 할 수 있음)
-        - cron: '0 0 * * *'
+# on:
+    # schedule:
+    #     # 매일 UTC 시간 기준 00:00에 실행 (현지 시간에 맞게 조정해야 할 수 있음)
+    #     - cron: '0 0 * * *'
 
-    workflow_dispatch:
+    # workflow_dispatch:
 
 jobs:
     monitor:
