@@ -1,17 +1,22 @@
 name: Server Monitoring
 
-on:
-    schedule:
-        # 매일 UTC 시간 기준 00:00에 실행 (현지 시간에 맞게 조정해야 할 수 있음)
-        - cron: '0 0 * * *'
+# on:
+    # schedule:
+    #     # 매일 UTC 시간 기준 00:00에 실행 (현지 시간에 맞게 조정해야 할 수 있음)
+    #     - cron: '0 0 * * *'
 
-    workflow_dispatch:
+    # workflow_dispatch:
 
 jobs:
     monitor:
-        runs-on: ubuntu-latest
-
+        runs-on: ubuntu-20.04
         steps:
+            - name: Check Bash Location
+              run: |
+                which bash
+                echo $SHELL
+                ls -l /bin/bash
+                ls -l /usr/bin/bash
             - name: Check Server Status
               uses: appleboy/ssh-action@master
               with:
@@ -21,8 +26,8 @@ jobs:
                   port: ${{ secrets.PORT }}
                   script: |
                       echo "Checking Docker containers status..."
-                      cd ${{secrets.PATH}}
-                      FAILED_CONTAINERS=$(docker-compose -f docker-compose.yml ps -q | xargs docker inspect --format '{{if not .State.Running}} {{.Name}} {{end}}')
+                      cd ${{secrets.PATH}} || exit 1
+                      FAILED_CONTAINERS=$(docker-compose -f docker-compose.yml ps -q | xargs -r docker inspect --format '{{if not .State.Running}} {{.Name}} {{end}}')
                       if [ -n "$FAILED_CONTAINERS" ]; then
                         echo "These containers are not running:$FAILED_CONTAINERS"
                         exit 1
