@@ -15,4 +15,4 @@ python manage.py makemigrations
 python manage.py migrate --no-input
 python manage.py collectstatic --no-input
 
-exec "$@"
+gunicorn cspc_web.wsgi:application -w 4 --bind 0.0.0.0:8000
