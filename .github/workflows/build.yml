@@ -3,7 +3,7 @@ name: Build and Push to Docker Hub
 on:
   push:
     branches:
-      - main # main 브랜치에 푸시될 때 실행
+      - main
 
 jobs:
   build:
@@ -42,3 +42,10 @@ jobs:
           platforms: linux/amd64,linux/arm64
           cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/apply_server:cache
           cache-to: type=inline
+
+      - name: Trigger Release Workflow
+        if: success()
+        uses: benc-uk/workflow-dispatch@v1
+        with:
+          workflow: "release.yml"
+          token: ${{ secrets.GITHUB_TOKEN }}
