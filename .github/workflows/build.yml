@@ -47,5 +47,5 @@ jobs:
         if: success()
         uses: benc-uk/workflow-dispatch@v1
         with:
-          workflow: "release.yml"
+          workflow: "deploy.yml"
           token: ${{ secrets.GITHUB_TOKEN }}
