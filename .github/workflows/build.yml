@@ -7,6 +7,7 @@ on:
 
 # workflow 실행 권한 설정
 permissions:
+  actions: write
   contents: write
 
 jobs:
@@ -44,8 +45,12 @@ jobs:
             ${{ env.DOCKERHUB_USERNAME }}/apply_server:latest
             ${{ env.DOCKERHUB_USERNAME }}/apply_server:${{ github.sha }}
           platforms: linux/amd64,linux/arm64
-          cache-from: type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/apply_server:cache
-          cache-to: type=inline
+          cache-from: |
+            type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/apply_server:cache
+            type=local,src=/tmp/.buildx-cache
+          cache-to: |
+            type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/apply_server:cache,mode=max
+            type=local,dest=/tmp/.buildx-cache
 
       - name: Trigger Release Workflow
         if: success()

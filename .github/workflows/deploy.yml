@@ -28,6 +28,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::867344471687:role/release
           aws-region: ap-northeast-2
+          output-credentials: true
 
       - name: Deploy to EC2 via SSM
         run: |
@@ -41,8 +42,6 @@ jobs:
               echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' >> /home/ssm-user/.env;
               echo 'POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}' >> /home/ssm-user/.env;
               echo 'POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}' >> /home/ssm-user/.env;
-              echo 'AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}' >> /home/ssm-user/.env;
-              echo 'AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}' >> /home/ssm-user/.env;
               echo 'AWS_STORAGE_BUCKET_NAME=${{ secrets.AWS_STORAGE_BUCKET_NAME }}' >> /home/ssm-user/.env;
               echo 'AWS_S3_REGION_NAME=${{ secrets.AWS_S3_REGION_NAME }}' >> /home/ssm-user/.env;
               echo 'DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}' >> /home/ssm-user/.env;
