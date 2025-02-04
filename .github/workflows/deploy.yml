@@ -75,21 +75,23 @@ jobs:
             --instance-ids "${{ env.INSTANCE_ID }}" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy new Docker image from Docker Hub with environment variables" \
-            --parameters commands="
-              echo 'POSTGRES_DB=${{ secrets.POSTGRES_DB }}' > /home/ssm-user/.env;
-              echo 'POSTGRES_USER=${{ secrets.POSTGRES_USER }}' >> /home/ssm-user/.env;
-              echo 'POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}' >> /home/ssm-user/.env;
-              echo 'POSTGRES_HOST=${{ secrets.POSTGRES_HOST }}' >> /home/ssm-user/.env;
-              echo 'POSTGRES_PORT=${{ secrets.POSTGRES_PORT }}' >> /home/ssm-user/.env;
-              echo 'AWS_STORAGE_BUCKET_NAME=${{ secrets.AWS_STORAGE_BUCKET_NAME }}' >> /home/ssm-user/.env;
-              echo 'AWS_S3_REGION_NAME=${{ secrets.AWS_S3_REGION_NAME }}' >> /home/ssm-user/.env;
-              echo 'DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }}' >> /home/ssm-user/.env;
-              chmod 600 /home/ssm-user/.env;
-              docker login -u '${{ env.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_PASSWORD }}';
-              docker pull ${{ env.DOCKER_IMAGE }};
-              docker stop myapp || true;
-              docker rm myapp || true;
-              docker run -d --name myapp -p 80:8000 --env-file /home/ssm-user/.env ${{ env.DOCKER_IMAGE }};
-            " \
+            --parameters '{
+              "commands": [
+                "echo POSTGRES_DB=${{ secrets.POSTGRES_DB }} > /home/ssm-user/.env",
+                "echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> /home/ssm-user/.env",
+                "echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> /home/ssm-user/.env",
+                "echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> /home/ssm-user/.env",
+                "echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> /home/ssm-user/.env",
+                "echo AWS_STORAGE_BUCKET_NAME=${{ secrets.AWS_STORAGE_BUCKET_NAME }} >> /home/ssm-user/.env",
+                "echo AWS_S3_REGION_NAME=${{ secrets.AWS_S3_REGION_NAME }} >> /home/ssm-user/.env",
+                "echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> /home/ssm-user/.env",
+                "chmod 600 /home/ssm-user/.env",
+                "docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_PASSWORD }}'",
+                "docker pull ${{ env.DOCKER_IMAGE }}",
+                "docker stop myapp || true",
+                "docker rm myapp || true",
+                "docker run -d --name myapp -p 80:8000 --env-file /home/ssm-user/.env ${{ env.DOCKER_IMAGE }}"
+              ]
+            }' \
             --max-concurrency "1" \
             --region ap-northeast-2
