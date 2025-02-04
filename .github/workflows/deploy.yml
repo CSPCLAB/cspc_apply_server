@@ -46,15 +46,12 @@ jobs:
             type=registry,ref=${{ env.DOCKERHUB_USERNAME }}/apply_server:cache,mode=max
             type=local,dest=${{ runner.temp }}/.buildx-cache
 
-      - name: Trigger Release Workflow
-        if: success()
-        uses: benc-uk/workflow-dispatch@v1
-        with:
-          workflow: "deploy.yml"
-          token: ${{ secrets.GITHUB_TOKEN }}
-
   deploy:
     runs-on: ubuntu-latest
+
+    permissions:
+      id-token: write # OIDC 인증을 위해 필요
+      contents: read # SSM 파라미터 스토어에 접근하기 위해 필요
 
     env:
       DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
