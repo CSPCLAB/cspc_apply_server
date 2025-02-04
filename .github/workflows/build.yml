@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+# workflow 실행 권한 설정
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
