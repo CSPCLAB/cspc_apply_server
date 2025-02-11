@@ -1,4 +1,4 @@
-FROM python:3.8-slim-buster
+FROM python:3.11-slim
 
 WORKDIR /home/app/web
 
@@ -21,4 +21,7 @@ RUN pip install --no-cache-dir --prefer-binary -r requirements.txt
 
 COPY . .
 
-CMD ["gunicorn --bind 0.0.0.0:8000 cspc_web.wsgi:application"]
+RUN python manage.py collectstatic --noinput
+
+# CMD ["gunicorn --bind 0.0.0.0:8000 cspc_web.wsgi:application"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "cspc_web.wsgi:application"]

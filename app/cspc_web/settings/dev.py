@@ -13,9 +13,6 @@ DATABASES = {
     }
 }
 
-# 개발용 S3 설정이 필요 없으면 주석 처리하거나, 로컬 static 사용
-# STATICFILES_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
-# DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
 
 # 로컬 static/media (base.py의 설정 그대로 쓰면 됨)
 STATIC_URL = "/static/"
