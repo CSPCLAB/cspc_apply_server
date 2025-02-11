@@ -47,6 +47,8 @@ jobs:
             type=local,dest=${{ runner.temp }}/.buildx-cache
 
   deploy:
+    needs: build
+    if: ${{ needs.build.result == 'success' }}
     runs-on: ubuntu-latest
 
     permissions:
@@ -82,15 +84,14 @@ jobs:
                 "echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> /home/ssm-user/.env",
                 "echo POSTGRES_HOST=${{ secrets.POSTGRES_HOST }} >> /home/ssm-user/.env",
                 "echo POSTGRES_PORT=${{ secrets.POSTGRES_PORT }} >> /home/ssm-user/.env",
-                "echo AWS_STORAGE_BUCKET_NAME=${{ secrets.AWS_STORAGE_BUCKET_NAME }} >> /home/ssm-user/.env",
                 "echo AWS_S3_REGION_NAME=${{ secrets.AWS_S3_REGION_NAME }} >> /home/ssm-user/.env",
                 "echo DJANGO_SECRET_KEY=${{ secrets.DJANGO_SECRET_KEY }} >> /home/ssm-user/.env",
                 "chmod 600 /home/ssm-user/.env",
-                "docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_PASSWORD }}'",
-                "docker pull ${{ env.DOCKER_IMAGE }}",
-                "docker stop myapp || true",
-                "docker rm myapp || true",
-                "docker run -d --name myapp -p 80:8000 --env-file /home/ssm-user/.env ${{ env.DOCKER_IMAGE }}"
+                "sudo docker login -u '${{ secrets.DOCKERHUB_USERNAME }}' -p '${{ secrets.DOCKERHUB_PASSWORD }}'",
+                "sudo docker pull ${{ env.DOCKER_IMAGE }}",
+                "sudo docker stop myapp || true",
+                "sudo docker rm myapp || true",
+                "sudo docker run -d --name myapp -p 80:8000 --env-file /home/ssm-user/.env ${{ env.DOCKER_IMAGE }}"
               ]
             }' \
             --max-concurrency "1" \
