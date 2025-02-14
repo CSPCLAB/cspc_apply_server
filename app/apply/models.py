@@ -31,16 +31,35 @@ class Recruitment(models.Model):
 
     def check_process(self):
         now = timezone.now()
-        if now >= self.announce_final_time:
-            self.process = RecruitProcess.FINAL
-        elif now >= self.announce_middle_time:
-            self.process = RecruitProcess.MIDDLE
-        elif now.date() >= self.start_time:
-            self.process = RecruitProcess.APPLY
-        else:
-            self.process = RecruitProcess.CLOSE
-        self.save()
 
+        if now >= self.announce_final_time:
+            new_process = RecruitProcess.FINAL
+        elif now >= self.announce_middle_time:
+            new_process = RecruitProcess.MIDDLE
+        elif now.date() >= self.start_time:
+            new_process = RecruitProcess.APPLY
+        else:
+            new_process = RecruitProcess.CLOSE
+
+        if self.process != new_process: 
+            self.process = new_process
+            self.save()
+
+    def clean(self):
+        if self.start_time >= self.document_deadline:
+            raise ValidationError("지원 시작일은 서류 마감일보다 이전이어야 합니다.")
+        if self.document_deadline >= self.announce_middle_time.date():
+            raise ValidationError("서류 마감일은 중간 발표일보다 이전이어야 합니다.")
+        if self.announce_middle_time.date() >= self.interview_start_time:
+            raise ValidationError("중간 발표일은 면접 시작일보다 이전이어야 합니다.")
+        if self.interview_start_time >= self.interview_end_time:
+            raise ValidationError("면접 시작일은 면접 종료일보다 이전이어야 합니다.")
+        if self.interview_end_time >= self.announce_final_time.date():
+            raise ValidationError("면접 종료일은 최종 발표일보다 이전이어야 합니다.")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()  # 저장 전에 유효성 검사 실행
+        super().save(*args, **kwargs)
 
 class InterviewTime(models.Model):
     time = models.DateTimeField(validators=[validate_interview_time])
@@ -69,7 +88,7 @@ class Resume(models.Model):
     etc = models.TextField(default="")
 
     interview_time_choice = models.ManyToManyField(
-        InterviewTime, related_name="interview_time"
+        InterviewTime, related_name="resumes"
     )
     fixed_interview_time = models.DateTimeField(null=True, blank=True)
     interview_requirement = models.TextField(default="")  # 면접 요구 사항
